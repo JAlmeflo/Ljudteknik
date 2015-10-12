@@ -2,7 +2,6 @@
 #include "OscGenerator.h"
 #include "portsf.h"
 #include <math.h>
-#include "BrkLoader.h"
 
 OscGenerator::OscGenerator(unsigned long sampleRate, double freq, double duration, double ampfac, int noOscillators, int waveFormType, char* filename)
 {
@@ -125,7 +124,7 @@ int OscGenerator::generateToText()
 int OscGenerator::generateToWav()
 {
 	BrkLoader loader = BrkLoader();
-	auto a = loader.LoadFile("amp.brk");
+	auto envs = loader.LoadFile("expAttack.brk");
 
 
 	PSF_PROPS props;
@@ -150,7 +149,9 @@ int OscGenerator::generateToWav()
 		{
 			val += oscamps[k] * tick_sine(oscs[k], freq*oscfreqs[k]);
 		}
-		float samp = (float)(val * ampfac);
+		double t = (double)i / (double)sampleRate;
+		double ampValue = GetEnvelopeValue(envs, t);
+		float samp = (float)(val * ampfac * ampValue);
 
 		float* frame = (float*) malloc(props.chans * sizeof(float));
 		frame[0] = samp;
@@ -187,4 +188,29 @@ double OscGenerator::tick_sine(Oscillator* osc, double cFreq)
 	}
 
 	return val;
+}
+
+double OscGenerator::GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p_time)
+{
+	for (unsigned int i = 0; i < p_envs.size() - 1; i++)
+	{
+		if (p_time >= p_envs[i].time && p_time <= p_envs[i + 1].time)
+		{
+			if (p_time >= 0.9)
+			{
+				int a = 0;
+			}
+			double time1 = p_envs[i].time;
+			double time2 = p_envs[i + 1].time;
+			double timeRatio = p_time != 0 ? (p_time - time1) / (time2 - time1) : 0.0;
+
+			double val1 = p_envs[i].value;
+			double val2 = p_envs[i + 1].value;
+			double valDiff = val2 - val1;
+
+			return val1 + valDiff * timeRatio;
+		}
+	}
+
+	return p_envs[p_envs.size() - 1].value;
 }

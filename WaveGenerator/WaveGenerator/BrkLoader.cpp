@@ -19,10 +19,10 @@ std::vector<EnvelopeLine> BrkLoader::LoadFile(std::string p_filename)
 		{
 			auto env = Split(line);
 			envs.push_back(env);
-			std::cout << line << "\n";
 		}
 		file.close();
 	}
+	envs = NormalizeVec(envs);
 	return envs;
 }
 
@@ -38,7 +38,7 @@ EnvelopeLine BrkLoader::Split(std::string p_line)
 	{
 		if (first)
 		{
-			if (p_line[i] == ' ')
+			if (p_line[i] == ' ' || p_line[i] == '\t')
 			{
 				first = false;
 			}
@@ -49,11 +49,7 @@ EnvelopeLine BrkLoader::Split(std::string p_line)
 		}
 		else
 		{
-			if (p_line[i] == ' ')
-			{
-				first = false;
-			}
-			else
+			if (p_line[i] != ' ' || p_line[i] != '\t')
 			{
 				secondString += p_line[i];
 			}
@@ -63,4 +59,39 @@ EnvelopeLine BrkLoader::Split(std::string p_line)
 	env.time = atof(firstString.c_str());
 	env.value = atof(secondString.c_str());
 	return env;
+}
+
+std::vector<EnvelopeLine> BrkLoader::NormalizeVec(std::vector<EnvelopeLine> p_envs)
+{
+	double min = p_envs[0].value;
+	double max = p_envs[0].value;
+
+	for (unsigned int i = 0; i < p_envs.size(); i++)
+	{
+		if (min > p_envs[i].value)
+		{
+			min = p_envs[i].value;
+		}
+		if (max < p_envs[i].value)
+		{
+			max = p_envs[i].value;
+		}
+	}
+	// vec: value / length
+	double length = max - min;
+	bool neg = min < 0.0;
+
+	for (unsigned int i = 0; i < p_envs.size(); i++)
+	{
+		if (neg)
+		{
+			p_envs[i].value = (p_envs[i].value + abs(min)) / length;
+		}
+		else
+		{
+			p_envs[i].value = p_envs[i].value / length;
+		}
+	}
+
+	return p_envs;
 }

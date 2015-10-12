@@ -16,5 +16,6 @@ public:
 
 private:
 	EnvelopeLine Split(std::string p_line);
+	std::vector<EnvelopeLine> NormalizeVec(std::vector<EnvelopeLine> p_envs);
 };
 

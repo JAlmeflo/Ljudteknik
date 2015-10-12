@@ -4,6 +4,7 @@
 #include "StdAfx.h"
 #include <vector>
 #include "Oscillator.h"
+#include "BrkLoader.h"
 
 /*
 	Skapar en syntetiserad ljudvåg av valfri typ och valfritt antal
@@ -30,7 +31,7 @@ private:
 
 	unsigned long nsamps;
 	double tick_sine(Oscillator* osc, double cFreq);
-	
+	double GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p_time);
 
 public:
 	OscGenerator(unsigned long sampleRate, double freq, double duration, double ampfac, int noOscillators, int waveFormType, char* filename);

@@ -33,3 +33,5 @@
 *.opensdf
 *.sdf
 *.pdb
+*.log
+*.tlog
