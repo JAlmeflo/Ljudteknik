@@ -41,6 +41,9 @@
     <ClInclude Include="OscGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BrkLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
@@ -70,6 +73,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OscGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BrkLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

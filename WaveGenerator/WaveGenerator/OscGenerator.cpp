@@ -2,6 +2,7 @@
 #include "OscGenerator.h"
 #include "portsf.h"
 #include <math.h>
+#include "BrkLoader.h"
 
 OscGenerator::OscGenerator(unsigned long sampleRate, double freq, double duration, double ampfac, int noOscillators, int waveFormType, char* filename)
 {
@@ -123,6 +124,10 @@ int OscGenerator::generateToText()
 
 int OscGenerator::generateToWav()
 {
+	BrkLoader loader = BrkLoader();
+	auto a = loader.LoadFile("amp.brk");
+
+
 	PSF_PROPS props;
 	props.srate = sampleRate;
 	props.chans = 1;
