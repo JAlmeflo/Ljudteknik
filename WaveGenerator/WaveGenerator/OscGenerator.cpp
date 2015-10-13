@@ -197,7 +197,7 @@ double OscGenerator::tick_sine(Oscillator* osc, double cFreq)
 	return val;
 }
 
-double OscGenerator::GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p_time, bool p_interpolate)
+double OscGenerator::GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p_time, bool p_useLinearInterpolate)
 {
 	for (unsigned int i = 0; i < p_envs.size() - 1; i++)
 	{
@@ -207,7 +207,7 @@ double OscGenerator::GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p
 			{
 				int a = 0;
 			}
-			if (!p_interpolate)
+			if (!p_useLinearInterpolate)
 			{
 				return p_envs[i].value;
 			}
