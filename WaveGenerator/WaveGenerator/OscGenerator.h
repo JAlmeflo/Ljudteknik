@@ -29,8 +29,15 @@ private:
 	int waveFormType;
 	void init();
 
+	//Lookup Table
+	int lutSize;
+	double lutStep;
+	double* lookUpTable;
+
 	unsigned long nsamps;
 	double tick_sine(Oscillator* osc, double cFreq);
+	double tick_LUT(Oscillator* p_osc, double p_cFreq);
+	double GetLUTValue(double p_phase);
 	double GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p_time, bool p_useLinearInterpolate);
 
 public:
@@ -39,6 +46,8 @@ public:
 
 	int generateToText();
 	int generateToWav(std::string p_ampEnv = "", std::string p_freqEnv = "");
+	void InitializeLUT();
+	int generateToWavWithLUT();
 
 	void setFilename(char* filename);
 };

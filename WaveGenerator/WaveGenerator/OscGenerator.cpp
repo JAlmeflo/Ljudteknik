@@ -225,3 +225,104 @@ double OscGenerator::GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p
 
 	return p_envs[p_envs.size() - 1].value;
 }
+
+void OscGenerator::InitializeLUT()
+{
+	lutSize = 64;
+	lutStep = TWOPI / lutSize;
+	lookUpTable = (double*)malloc((lutSize + 1) * sizeof(double));
+
+	for (int i = 0; i < lutSize; i++)
+	{
+		lookUpTable[i] = sin(lutStep * i);
+	}
+
+	lookUpTable[lutSize] = lookUpTable[0];
+}
+
+int OscGenerator::generateToWavWithLUT()
+{
+	PSF_PROPS props;
+	props.srate = sampleRate;
+	props.chans = 1;
+	props.samptype = PSF_SAMP_IEEE_FLOAT;
+	props.format = PSF_WAVE_EX;
+	props.chformat = MC_MONO;
+	portsf psf;
+
+	int ofd = psf.psf_sndCreate(filename, &props, 1, 0, PSF_CREATE_RDWR);
+	if (ofd < 0)
+	{
+		cout << "Unable to open file '" << filename << "'" << endl;
+		return 1;
+	}
+
+	for (unsigned long i = 0; i < nsamps; i++)
+	{
+		double val = 0.0;
+		for (int k = 0; k < (int)oscs.size(); k++)
+		{
+			val += oscamps[k] * tick_LUT(oscs[k], freq*oscfreqs[k]);
+		}
+		float samp = (float)(val * ampfac);
+
+		float* frame = (float*)malloc(props.chans * sizeof(float));
+		frame[0] = samp;
+		psf.psf_sndWriteFloatFrames(ofd, frame, 1);
+
+	}
+	//Close file
+	psf.psf_sndClose(ofd);
+
+	return 0;
+}
+
+double OscGenerator::tick_LUT(Oscillator* p_osc, double p_cFreq)
+{
+	double val = 0.0;
+
+	//Samp calculation
+	val = GetLUTValue(p_osc->curPhase);
+
+	//cout << val << endl;
+	if (p_osc->curFreq != p_cFreq)
+	{
+		p_osc->curFreq = p_cFreq;
+		p_osc->incr = p_osc->twoPI_ovr_sr * p_cFreq;
+	}
+	p_osc->curPhase += p_osc->incr;
+	if (p_osc->curPhase >= TWOPI)
+	{
+		p_osc->curPhase -= TWOPI;
+	}
+	if (p_osc->curPhase < 0.0)
+	{
+		p_osc->curPhase += TWOPI;
+	}
+
+	return val;
+}
+
+double OscGenerator::GetLUTValue(double p_phase)
+{
+	for (int i = 1; i < lutSize; i++)
+	{
+		double highValue = i * lutStep;
+		double lowValue = (i - 1) * lutStep;
+
+		if (p_phase == lowValue)
+		{
+			return lookUpTable[i - 1];
+		}
+		else if (p_phase == highValue)
+		{
+			return lookUpTable[i];
+		}
+		else if (p_phase > lowValue && p_phase < highValue)
+		{
+			return lookUpTable[i - 1] + (lookUpTable[i] - lookUpTable[i - 1]) * (p_phase - lowValue) / (highValue - lowValue);
+		}
+	}
+
+	return 0.0;
+}
