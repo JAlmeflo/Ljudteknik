@@ -153,11 +153,11 @@ int OscGenerator::generateToWav(std::string p_ampEnv, std::string p_freqEnv)
 		double time = (double)i / (double)sampleRate;
 		for (int k = 0; k < (int)oscs.size(); k++)
 		{
-			freq = useFreqEnv ? GetEnvelopeValue(freqEnvs, time) : freq;
+			freq = useFreqEnv ? GetEnvelopeValue(freqEnvs, time, false) : freq;
 			val += oscamps[k] * tick_sine(oscs[k], freq*oscfreqs[k]);
 		}
 		
-		double ampValue = useAmpEnv ? GetEnvelopeValue(ampEnvs, time) : 1.0;
+		double ampValue = useAmpEnv ? GetEnvelopeValue(ampEnvs, time, true) : 1.0;
 		float samp = (float)(val * ampfac * ampValue);
 
 		float* frame = (float*) malloc(props.chans * sizeof(float));
@@ -197,7 +197,7 @@ double OscGenerator::tick_sine(Oscillator* osc, double cFreq)
 	return val;
 }
 
-double OscGenerator::GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p_time)
+double OscGenerator::GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p_time, bool p_interpolate)
 {
 	for (unsigned int i = 0; i < p_envs.size() - 1; i++)
 	{
@@ -206,6 +206,10 @@ double OscGenerator::GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p
 			if (p_time >= 0.9)
 			{
 				int a = 0;
+			}
+			if (!p_interpolate)
+			{
+				return p_envs[i].value;
 			}
 			double time1 = p_envs[i].time;
 			double time2 = p_envs[i + 1].time;

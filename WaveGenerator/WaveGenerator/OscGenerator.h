@@ -31,7 +31,7 @@ private:
 
 	unsigned long nsamps;
 	double tick_sine(Oscillator* osc, double cFreq);
-	double GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p_time);
+	double GetEnvelopeValue(std::vector<EnvelopeLine> p_envs, double p_time, bool p_interpolate);
 
 public:
 	OscGenerator(unsigned long sampleRate, double freq, double duration, double ampfac, int noOscillators, int waveFormType, char* filename);
