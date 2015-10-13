@@ -12,7 +12,7 @@ class BrkLoader
 {
 public:
 	BrkLoader();
-	std::vector<EnvelopeLine> LoadFile(std::string file);
+	std::vector<EnvelopeLine> LoadFile(std::string file, bool p_normalize);
 
 private:
 	EnvelopeLine Split(std::string p_line);

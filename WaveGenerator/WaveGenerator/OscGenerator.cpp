@@ -121,10 +121,15 @@ int OscGenerator::generateToText()
 	return 0;
 }
 
-int OscGenerator::generateToWav()
+int OscGenerator::generateToWav(std::string p_ampEnv, std::string p_freqEnv)
 {
+	bool useAmpEnv = p_ampEnv != "";
+	bool useFreqEnv = p_freqEnv != "";
 	BrkLoader loader = BrkLoader();
-	auto envs = loader.LoadFile("expAttack.brk");
+	std::vector<EnvelopeLine> ampEnvs;
+	std::vector<EnvelopeLine> freqEnvs;
+	if (useAmpEnv) ampEnvs = loader.LoadFile(p_ampEnv, true);
+	if (useFreqEnv) freqEnvs = loader.LoadFile(p_freqEnv, false);
 
 
 	PSF_PROPS props;
@@ -145,12 +150,14 @@ int OscGenerator::generateToWav()
 	for (unsigned long i = 0; i < nsamps; i++)
 	{
 		double val = 0.0;
+		double time = (double)i / (double)sampleRate;
 		for (int k = 0; k < (int)oscs.size(); k++)
 		{
+			freq = useFreqEnv ? GetEnvelopeValue(freqEnvs, time) : freq;
 			val += oscamps[k] * tick_sine(oscs[k], freq*oscfreqs[k]);
 		}
-		double t = (double)i / (double)sampleRate;
-		double ampValue = GetEnvelopeValue(envs, t);
+		
+		double ampValue = useAmpEnv ? GetEnvelopeValue(ampEnvs, time) : 1.0;
 		float samp = (float)(val * ampfac * ampValue);
 
 		float* frame = (float*) malloc(props.chans * sizeof(float));

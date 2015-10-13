@@ -8,7 +8,7 @@ BrkLoader::BrkLoader()
 {
 }
 
-std::vector<EnvelopeLine> BrkLoader::LoadFile(std::string p_filename)
+std::vector<EnvelopeLine> BrkLoader::LoadFile(std::string p_filename, bool p_normalize)
 {
 	std::vector<EnvelopeLine> envs = std::vector<EnvelopeLine>();
 	std::string line;
@@ -22,8 +22,7 @@ std::vector<EnvelopeLine> BrkLoader::LoadFile(std::string p_filename)
 		}
 		file.close();
 	}
-	envs = NormalizeVec(envs);
-	return envs;
+	return p_normalize ? NormalizeVec(envs) : envs;
 }
 
 EnvelopeLine BrkLoader::Split(std::string p_line)

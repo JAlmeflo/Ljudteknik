@@ -38,7 +38,7 @@ public:
 	~OscGenerator();
 
 	int generateToText();
-	int generateToWav();
+	int generateToWav(std::string p_ampEnv = "", std::string p_freqEnv = "");
 
 	void setFilename(char* filename);
 };
