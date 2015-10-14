@@ -234,7 +234,17 @@ void OscGenerator::InitializeLUT()
 
 	for (int i = 0; i < lutSize; i++)
 	{
-		lookUpTable[i] = sin(lutStep * i);
+		double val = sin(lutStep * i);
+		// Square
+		//if (val < 0.0)
+		//{
+			//val = -1.0;
+		//}
+		//else
+		//{
+			//val = 1.0;
+		//}
+		lookUpTable[i] = val;
 	}
 
 	lookUpTable[lutSize] = lookUpTable[0];
