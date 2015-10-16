@@ -6,6 +6,7 @@ System::System()
 {
 	m_input = 0;
 	m_graphics = 0;
+	m_sounds = 0;
 }
 
 
@@ -38,6 +39,14 @@ bool System::Initialize()
 		return false;
 	}
 
+	//Sounds
+	m_sounds = new SoundManager();
+	result = m_sounds->Initialize(m_hwnd);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -51,6 +60,10 @@ void System::Shutdown()
 	//Input
 	delete m_input;
 	m_input = 0;
+
+	// Sound
+	delete m_sounds;
+	m_sounds = 0;
 
 	ShutdownWindows();
 }

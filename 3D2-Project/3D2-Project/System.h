@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "Graphics.h"
 #include <string>
+#include "SoundManager.h"
 
 class System
 {
@@ -35,6 +36,7 @@ private:
 
 	Input* m_input;
 	Graphics* m_graphics;
+	SoundManager* m_sounds;
 
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 	static System* ApplicationHandle;

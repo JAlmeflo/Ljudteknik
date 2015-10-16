@@ -30,6 +30,8 @@ public:
 	void Shutdown();
 	bool Frame();
 	void Update(float);
+	D3DXVECTOR3 GetCameraPosition();
+	D3DXVECTOR3 GetCameraRotation();
 private :
 	bool RenderSceneToTexture();
 	bool Render(float);

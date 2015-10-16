@@ -329,3 +329,13 @@ void Graphics::SetWindowTitle()
 
 	SetWindowTextA(m_hwnd, (LPCSTR)text.c_str());
 }
+
+D3DXVECTOR3 Graphics::GetCameraPosition()
+{
+	return m_camera->GetPosition();
+}
+
+D3DXVECTOR3 Graphics::GetCameraRotation()
+{
+	return m_camera->GetRotation();
+}
