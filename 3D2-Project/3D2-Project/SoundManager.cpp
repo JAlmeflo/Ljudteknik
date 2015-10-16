@@ -38,6 +38,14 @@ void SoundManager::Shutdown()
 	ShutdownDirectSound();
 }
 
+void SoundManager::Update(D3DXVECTOR3 p_cameraPos)
+{
+	D3DXVECTOR3 soundPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	float length = sqrt(pow(p_cameraPos.x - soundPos.x, 2) + pow(p_cameraPos.y - soundPos.y, 2) + pow(p_cameraPos.z - soundPos.z, 2));
+	m_secondaryBuffer1->SetVolume(-length * 10);
+}
+
 bool SoundManager::InitializeDirectSound(HWND p_hwnd)
 {
 	HRESULT result;

@@ -157,6 +157,8 @@ bool System::Update(float deltaTime)
 
 	m_input->Update(deltaTime);
 
+	m_sounds->Update(m_graphics->GetCameraPosition());
+
 	if (m_input->IsKeyDown(VK_ESCAPE))
 	{
 		return false;

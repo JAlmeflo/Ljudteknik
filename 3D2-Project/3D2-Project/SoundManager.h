@@ -8,6 +8,7 @@
 #include <mmsystem.h>
 #include <dsound.h>
 #include <stdio.h>
+#include <D3DX10math.h>
 
 class SoundManager
 {
@@ -34,6 +35,8 @@ public:
 
 	bool Initialize(HWND p_hwnd);
 	void Shutdown();
+
+	void Update(D3DXVECTOR3 p_cameraPos);
 private:
 	bool InitializeDirectSound(HWND p_hwnd);
 	void ShutdownDirectSound();
