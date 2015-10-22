@@ -8,7 +8,8 @@ bool SoundManager::Initialize(HWND p_hwnd)
 {
 	m_directSound = 0;
 	m_primaryBuffer = 0;
-	m_secondaryBuffer1 = 0;
+	m_nrSecondaryBuffers = 3;
+	m_secondaryBuffer = new IDirectSoundBuffer8*[m_nrSecondaryBuffers];
 
 	// Init
 	if (!InitializeDirectSound(p_hwnd))
@@ -17,13 +18,21 @@ bool SoundManager::Initialize(HWND p_hwnd)
 	}
 
 	// Load sounds
-	if (!LoadWaveFile("BG_music2.wav", &m_secondaryBuffer1))
+	if (!LoadWaveFile("BG_music2.wav", &m_secondaryBuffer[0]))
+	{
+		return false;
+	}
+	if (!LoadWaveFile("SmokeBomb.wav", &m_secondaryBuffer[1]))
+	{
+		return false;
+	}
+	if (!LoadWaveFile("Bird.wav", &m_secondaryBuffer[2]))
 	{
 		return false;
 	}
 
 	// Play sounds
-	if (!PlayWaveFile())
+	if (!PlayWaveFiles())
 	{
 		return false;
 	}
@@ -33,17 +42,28 @@ bool SoundManager::Initialize(HWND p_hwnd)
 
 void SoundManager::Shutdown()
 {
-	ShutdownWaveFile(&m_secondaryBuffer1);
+	for (int i = 0; i < m_nrSecondaryBuffers; i++)
+	{
+		ShutdownWaveFile(&m_secondaryBuffer[i]);
+	}	
 
 	ShutdownDirectSound();
 }
 
 void SoundManager::Update(D3DXVECTOR3 p_cameraPos)
 {
-	D3DXVECTOR3 soundPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3* soundPos = new D3DXVECTOR3[m_nrSecondaryBuffers];
+	soundPos[0] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// Music
+	soundPos[1] = D3DXVECTOR3(75.0f, 0.0f, 75.0f);		// Smoke
+	soundPos[2] = D3DXVECTOR3(-75.0f, 0.0f, -75.0f);	// Bird
 
-	float length = sqrt(pow(p_cameraPos.x - soundPos.x, 2) + pow(p_cameraPos.y - soundPos.y, 2) + pow(p_cameraPos.z - soundPos.z, 2));
-	m_secondaryBuffer1->SetVolume(-length * 10);
+	for (int i = 0; i < m_nrSecondaryBuffers; i++)
+	{
+		float length = sqrt(pow(p_cameraPos.x - soundPos[i].x, 2) + pow(p_cameraPos.y - soundPos[i].y, 2) + pow(p_cameraPos.z - soundPos[i].z, 2));
+		m_secondaryBuffer[i]->SetVolume(-length * 25);
+	}
+	
+	delete[] soundPos;
 }
 
 bool SoundManager::InitializeDirectSound(HWND p_hwnd)
@@ -253,27 +273,29 @@ void SoundManager::ShutdownWaveFile(IDirectSoundBuffer8** p_secondaryBuffer)
 	}
 }
 
-bool SoundManager::PlayWaveFile()
+bool SoundManager::PlayWaveFiles()
 {
 	HRESULT result;
 
-	result = m_secondaryBuffer1->SetCurrentPosition(0);
-	if (FAILED(result))
+	for (int i = 0; i < m_nrSecondaryBuffers; i++)
 	{
-		return false;
-	}
+		result = m_secondaryBuffer[i]->SetCurrentPosition(0);
+		if (FAILED(result))
+		{
+			return false;
+		}
 
-	result = m_secondaryBuffer1->SetVolume(DSBVOLUME_MAX);
-	if (FAILED(result))
-	{
-		return false;
-	}
+		result = m_secondaryBuffer[i]->SetVolume(DSBVOLUME_MAX);
+		if (FAILED(result))
+		{
+			return false;
+		}
 
-	result = m_secondaryBuffer1->Play(0, 0, 0);
-	if (FAILED(result))
-	{
-		return false;
+		result = m_secondaryBuffer[i]->Play(0, 0, DSBPLAY_LOOPING);
+		if (FAILED(result))
+		{
+			return false;
+		}
 	}
-
 	return true;
 }

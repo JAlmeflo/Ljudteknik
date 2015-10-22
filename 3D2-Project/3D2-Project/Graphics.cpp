@@ -54,13 +54,13 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	//Van
 	Model* van = new Model();
-	result = van->Initialize(m_D3D->GetDevice(), "../3D2-Project/Obj/Van.obj", "../3D2-Project/Textures/Van.jpg", "../3D2-Project/Textures/Van.jpg", 3);
+	result = van->Initialize(m_D3D->GetDevice(), "../3D2-Project/Obj/Van.obj", "../3D2-Project/Textures/Van.jpg", "../3D2-Project/Textures/Van.jpg", 1);
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
 		return false;
 	}
-	van->SetPosition(-20, 0, 0);
+	van->SetPosition(0, 0, 0);
 
 	//Bush
 	Model* bush = new Model();
@@ -71,9 +71,30 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 	bush->SetPosition(0, 0, 30);
+
+	// Van sound1
+	Model* van1 = new Model();
+	result = van1->Initialize(m_D3D->GetDevice(), "../3D2-Project/Obj/Van.obj", "../3D2-Project/Textures/Van.jpg", "../3D2-Project/Textures/Van.jpg", 1);
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
+		return false;
+	}
+	van1->SetPosition(75, 0, 75);
+	// Van sound2
+	Model* van2 = new Model();
+	result = van2->Initialize(m_D3D->GetDevice(), "../3D2-Project/Obj/Van.obj", "../3D2-Project/Textures/Van.jpg", "../3D2-Project/Textures/Van.jpg", 1);
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
+		return false;
+	}
+	van2->SetPosition(-75, 0, -75);
 	
 	m_models.push_back(ground);
 	m_models.push_back(van);
+	m_models.push_back(van1);
+	m_models.push_back(van2);
 
 	m_billboadModels.push_back(bush);
 

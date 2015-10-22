@@ -43,11 +43,12 @@ private:
 
 	bool LoadWaveFile(char* p_filename, IDirectSoundBuffer8** p_secondaryBuffer);
 	void ShutdownWaveFile(IDirectSoundBuffer8** p_secondaryBuffer);
-	bool PlayWaveFile();
+	bool PlayWaveFiles();
 
 	IDirectSound8* m_directSound;
 	IDirectSoundBuffer* m_primaryBuffer;
 
-	IDirectSoundBuffer8* m_secondaryBuffer1;
+	IDirectSoundBuffer8** m_secondaryBuffer;
+	int m_nrSecondaryBuffers;
 };
 
