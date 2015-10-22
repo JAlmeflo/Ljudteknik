@@ -1,0 +1,17 @@
+Some notes regarding the project.
+
+
+Programming:
+I have been using DirectSound to program the Sound in to my existing 3D-project.
+I have added three sounds where they change volume based on the distance between the camera and the object.
+The SoundManager uses one PrimaryBuffer and several SecondaryBuffers. 
+Where each sound is loaded into a separate SecondaryBuffer.
+Then when the program play one or several SecondaryBuffers they mix together to the PrimaryBuffer which plays the sound to the sound card.
+
+
+Video:
+The video shows three cars who each have a separate sound. The further away from a car the quieter the sound will be.
+The video starts on the middle one who have a asian music sound playing. It pans backwards a bit to show that the sounds gets quieter the further away the camera is.
+After that the video pans to the upper right car which have a windy sound. (Smokebomb taken from the large game project).
+It then go back and goes to the last car (down left car) which have a bird voice playing.
+Lastly the camera pans back far away so the whole program becomes quiet.
